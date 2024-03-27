@@ -17,12 +17,5 @@ if ((parent != NULL) && (parent->parent != NULL))
 left = parent->parent->left;
 right = parent->parent->right;
 }
-if (left == parent)
-{
-return right;
-}
-else
-{
-return left;
-}
+return (left == parent ? right : left);
 }
