@@ -1,7 +1,6 @@
 #ifndef _BINARY_TREES_H_
 #define _BINARY_TREES_H_
 #include <stdlib.h>
-#include <stddef.h>
 #include <stdio.h>
 #include <string.h>
 #include <limits.h>
