@@ -7,6 +7,7 @@
 * @n: A pointer to the queue's size value.
 * @item: The item to add to the queue.
 */
+
 void enqueue_item_1(binary_tree_t **queue_h, binary_tree_t **queue_t,
 int *n, void *item)
 {
@@ -40,6 +41,7 @@ if (n != NULL)
 *
 * Return: The value of the removed queue.
 */
+
 binary_tree_t *dequeue_item_1(binary_tree_t **queue_h,
 binary_tree_t **queue_t, int *n)
 {
@@ -79,6 +81,7 @@ return (node);
 *
 * Return: 1 if the tree is complete, otherwise 0.
 */
+
 int binary_tree_is_complete(const binary_tree_t *tree)
 {
 binary_tree_t *queue_head = NULL;
