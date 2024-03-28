@@ -1,49 +1,33 @@
+#include <stdlib.h>
+#include <stdio.h>
 #include "binary_trees.h"
 
 /**
- * binary_search_tree_checker - Checks if a binary tree is \
- * a binary search tree.
- * @tree: The binary tree.
- * @min: The minimum value of the tree.
- * @max: The mazimum value of the tree.
- * @is_bst: A pointer to the tree's validation flag.
- */
-
-void binary_search_tree_checker(const binary_tree_t *tree,
-	int min, int max, int *is_bst)
+* main - Entry point
+*
+* Return: Always 0 (Success)
+*/
+int main(void)
 {
-	if (tree != NULL)
-	{
-		if ((tree->n > min) && (tree->n < max))
-		{
-			binary_search_tree_checker(tree->left, min, tree->n, is_bst);
-			binary_search_tree_checker(tree->right, tree->n, max, is_bst);
-		}
-		else
-		{
-			if (is_bst != NULL)
-			{
-				*is_bst = 0;
-			}
-		}
-	}
-}
+binary_tree_t *root;
+int bst;
 
-/**
- * binary_tree_is_bst - Checks if a binary tree is binary search tree.
- * @tree: The binary tree.
- *
- * Return: The 1 if the binary tree is binary search tee, otherwise 0.
- */
+root = binary_tree_node(NULL, 98);
+root->left = binary_tree_node(root, 12);
+root->right = binary_tree_node(root, 128);
+root->left->right = binary_tree_node(root->left, 54);
+root->right->right = binary_tree_node(root, 402);
+root->left->left = binary_tree_node(root->left, 10);
 
-int binary_tree_is_bst(const binary_tree_t *tree)
-{
-	int is_bst = 0;
+binary_tree_print(root);
+bst = binary_tree_is_bst(root);
+printf("Is %d bst: %d\n", root->n, bst);
+bst = binary_tree_is_bst(root->left);
+printf("Is %d bst: %d\n", root->left->n, bst);
 
-	if (tree != NULL)
-	{
-		is_bst = 1;
-		binary_search_tree_checker(tree, INT_MIN, INT_MAX, &is_bst);
-	}
-	return (is_bst);
+root->right->left = binary_tree_node(root->right, 97);
+binary_tree_print(root);
+bst = binary_tree_is_bst(root);
+printf("Is %d bst: %d\n", root->n, bst);
+return (0);
 }
