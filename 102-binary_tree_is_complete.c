@@ -1,127 +1,113 @@
 #include "binary_trees.h"
-
 /**
-* enqueue_item_1 - Adds an item to a queue.
-* @queue_h: A pointer to the queue's head.
-* @queue_t: A pointer to the queue's tail.
-* @n: A pointer to the queue's size value.
-* @item: The item to add to the queue.
+* new_node - Function that creates a new_node in a linked_list
+* @node: Type pointer of node to be created
+* Return: the node created
 */
-
-void enqueue_item_1(binary_tree_t **queue_h, binary_tree_t **queue_t,
-int *n, void *item)
+link_t *new_node(binary_tree_t *node)
 {
-binary_tree_t *new_node;
-binary_tree_t *node = (binary_tree_t *)item;
+link_t *new;
 
-if ((queue_h != NULL) && (queue_t != NULL))
+new =  malloc(sizeof(link_t));
+if (new == NULL)
 {
-new_node = malloc(sizeof(binary_tree_t));
-if (new_node == NULL)
-return;
-new_node->left = *queue_t;
-new_node->right = NULL;
-new_node->n = (node != NULL ? node->n : -1);
-new_node->parent = node;
-if (*queue_h == NULL)
-*queue_h = new_node;
-if (*queue_t != NULL)
-(*queue_t)->right = new_node;
-*queue_t = new_node;
-if (n != NULL)
-(*n)++;
+return (NULL);
 }
-}
+new->node = node;
+new->next = NULL;
 
+return (new);
+}
 /**
-* dequeue_item_1 - Removes an item from a queue.
-* @queue_h: A pointer to the queue's head.
-* @queue_t: A pointer to the queue's tail.
-* @n: A pointer to the queue's size value.
-*
-* Return: The value of the removed queue.
+* free_q - Function that free the nodes at the linked list
+* @head: Node of the linked_list
 */
+void free_q(link_t *head)
+{
+link_t *temp_node;
 
-binary_tree_t *dequeue_item_1(binary_tree_t **queue_h,
-binary_tree_t **queue_t, int *n)
+while (head)
 {
-binary_tree_t *tmp0;
-binary_tree_t *tmp1;
-binary_tree_t *node = NULL;
-
-if ((queue_h != NULL) && (queue_t != NULL))
-{
-tmp0 = *queue_h;
-if (tmp0 != NULL)
-{
-node = tmp0->parent;
-if (tmp0->right != NULL)
-{
-tmp1 = tmp0->right;
-tmp1->left = NULL;
-*queue_h = tmp1;
-free(tmp0);
-}
-else
-{
-free(tmp0);
-*queue_h = NULL;
-*queue_t = NULL;
-}
-if (n != NULL)
-(*n)--;
+temp_node = head->next;
+free(head);
+head = temp_node;
 }
 }
-return (node);
-}
-
 /**
-* binary_tree_is_complete - Checks if a binary tree is complete.
-* @tree: The binary tree.
-*
-* Return: 1 if the tree is complete, otherwise 0.
+* _push - Function that pushes a node into the stack
+* @node: Type pointer of node of the tree
+* @head: Type head node of in the stack
+* @tail: Type tail node of in the stack
 */
+void _push(binary_tree_t *node, link_t *head, link_t **tail)
+{
+link_t *new;
 
+new = new_node(node);
+if (new == NULL)
+{
+free_q(head);
+exit(1);
+}
+(*tail)->next = new;
+*tail = new;
+}
+/**
+* _pop - Function that pops a node into the stack
+* @head: Type head node of in the stack
+*/
+void _pop(link_t **head)
+{
+link_t *temp_node;
+
+temp_node = (*head)->next;
+free(*head);
+*head = temp_node;
+}
+/**
+* binary_tree_is_complete - Function that checks if a binary tree is complete
+* @tree: Type pointer of node of the tree
+* Return: 1 if is complete 0 if it is not
+*/
 int binary_tree_is_complete(const binary_tree_t *tree)
 {
-binary_tree_t *queue_head = NULL;
-binary_tree_t *queue_tail = NULL;
-binary_tree_t *current = NULL;
-int n = 0, stop = 0;
-int is_complete = 0;
+link_t *head, *tail;
+int flag = 0;
 
-if (tree != NULL)
+if (tree == NULL)
 {
-is_complete = 1;
-enqueue_item_1(&queue_head, &queue_tail, &n, (void *)tree);
-while (n > 0)
+return (0);
+}
+head = tail = new_node((binary_tree_t *)tree);
+if (head == NULL)
 {
-current = queue_head;
-if (current->parent == NULL)
+exit(1);
+}
+while (head != NULL)
 {
-stop = 1;
+if (head->node->left != NULL)
+{
+if (flag == 1)
+{
+free_q(head);
+return (0);
+}
+_push(head->node->left, head, &tail);
 }
 else
+flag = 1;
+if (head->node->right != NULL)
 {
-if (stop == 1)
+if (flag == 1)
 {
-is_complete = 0;
-break;
+free_q(head);
+return (0);
 }
-else if (current->parent != NULL)
-{
-enqueue_item_1(
-&queue_head, &queue_tail, &n, (void *)(current->parent->left)
-);
-enqueue_item_1(
-&queue_head, &queue_tail, &n, (void *)(current->parent->right)
-);
+_push(head->node->right, head, &tail);
 }
+else
+flag = 1;
+_pop(&head);
 }
-dequeue_item_1(&queue_head, &queue_tail, &n);
-}
-while (n > 0)
-dequeue_item_1(&queue_head, &queue_tail, &n);
-}
-return (is_complete);
+return (1);
 }
